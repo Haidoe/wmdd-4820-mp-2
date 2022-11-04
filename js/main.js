@@ -2,6 +2,26 @@
 //Use an array of objects
 //Don't forget to include comments, and delete testing "console.log"s before submitting a zip file.
 
+//Cleaner way to add css
+document.querySelector("head").innerHTML = `
+  ${document.querySelector("head").innerHTML}
+
+  <style>
+    table {
+      width: 100%;
+    }
+
+    td {
+      font-size: 1rem;
+    }
+
+    .checked td {
+      background-color: #90ee8f;
+      color: #808080;
+    }
+  </style>
+`;
+
 const daysOfTheWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const months = [
@@ -89,10 +109,16 @@ const drawTable = () => {
 
     //Drawing happens here
     const row = userFeedbackTable.insertRow(i);
+
+    row.className = todo.completed ? "checked" : "";
+
     row.insertCell(0).innerHTML = todo.todo;
     row.insertCell(1).innerHTML = todo.created;
     row.insertCell(2).appendChild(checkbox);
-    row.insertCell(3).innerHTML = todo.updated;
+
+    const updated = row.insertCell(3);
+    updated.innerHTML = todo.updated;
+    updated.width = "30%";
   }
 };
 
