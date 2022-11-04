@@ -2,7 +2,7 @@
 //Use an array of objects
 //Don't forget to include comments, and delete testing "console.log"s before submitting a zip file.
 
-const daysOfTheWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const daysOfTheWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const months = [
   "Jan",
@@ -30,6 +30,18 @@ const formatDate = (d) => {
   return `${dayOfWeek} ${month} ${day} ${year}`;
 };
 
+//Bringing the Checked Checkbox down
+const updateTodosSequence = () => {
+  //Get all the completed
+  const completed = todos.filter((todo) => todo.completed);
+
+  //Get all the not completed
+  const notCompleted = todos.filter((todo) => !todo.completed);
+
+  //Update the Todos List
+  todos = [...notCompleted, ...completed];
+};
+
 const addTodo = (e) => {
   e.preventDefault();
 
@@ -39,7 +51,8 @@ const addTodo = (e) => {
     return;
   }
 
-  const now = new Date();
+  const now = new Date(Date.now());
+
   const created = formatDate(now);
 
   todos.push({
@@ -52,11 +65,68 @@ const addTodo = (e) => {
   userInput.value = "";
   userInput.focus();
 
-  console.log(todo);
+  updateTodosSequence();
 
   //Display To Table
-  //Add Event Listener to Checkbox
+  drawTable();
+
   //Add Reset
 };
 
+const drawTable = () => {
+  userFeedbackTable.innerHTML = "";
+
+  for (let i = 0; i < todos.length; i++) {
+    const todo = todos[i];
+
+    //Creating Checkbox
+    const checkbox = document.createElement("input");
+    checkbox.setAttribute("type", "checkbox");
+    checkbox.setAttribute("class", "checkbox");
+    checkbox.checked = todo.completed;
+    //Sequence of the todo in the array
+    checkbox.setAttribute("sequence", i);
+
+    //Drawing happens here
+    const row = userFeedbackTable.insertRow(i);
+    row.insertCell(0).innerHTML = todo.todo;
+    row.insertCell(1).innerHTML = todo.created;
+    row.insertCell(2).appendChild(checkbox);
+    row.insertCell(3).innerHTML = todo.updated;
+  }
+};
+
 addItem.addEventListener("click", addTodo);
+
+//For Better UX - Trigger AddTodo for Enter Key
+userInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    addTodo(e);
+  }
+});
+
+//Event Delegation
+userFeedbackTable.addEventListener("click", (e) => {
+  // This will check if the the checkbox has been clicked
+  if (e.target.matches(".checkbox")) {
+    //Custom attribute, need to retrience the data using getAttribute
+    const id = e.target.getAttribute("sequence");
+    const todo = todos[id];
+    todo.completed = !todo.completed;
+
+    if (todo.completed) {
+      const now = new Date();
+      const date = formatDate(now);
+
+      todo.updated = date;
+    } else {
+      todo.updated = "";
+    }
+
+    //Bringing the Checked Checkbox down
+    updateTodosSequence();
+
+    //Redraw the table
+    drawTable();
+  }
+});
