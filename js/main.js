@@ -113,7 +113,10 @@ const drawTable = () => {
     row.className = todo.completed ? "checked" : "";
 
     row.insertCell(0).innerHTML = todo.todo;
-    row.insertCell(1).innerHTML = todo.created;
+    const created = row.insertCell(1);
+    created.innerHTML = todo.created;
+    created.width = "30%";
+
     row.insertCell(2).appendChild(checkbox);
 
     const updated = row.insertCell(3);
