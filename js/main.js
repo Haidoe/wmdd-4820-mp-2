@@ -19,8 +19,50 @@ document.querySelector("head").innerHTML = `
       background-color: #90ee8f;
       color: #808080;
     }
+    
+    #hidden {
+      display: none;
+    }
+
+    .action-btn-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .update-btn {
+      padding: 1rem;
+      background-color: #f99c3a;
+      border:#f99c3a;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1.15rem;
+      margin-top: 2rem;
+    }
+
+    .update-btn:hover {
+      background-color: #eed9b1;
+	    color: #f99c3a;
+    }
   </style>
 `;
+
+// Adding an Update Task List Button -- For Bonus!
+
+//Create Update List Btn
+const updateBtnElement = document.createElement("button");
+updateBtnElement.setAttribute("class", "update-btn");
+updateBtnElement.textContent = "Update Task List";
+//Need to hide initially
+updateBtnElement.setAttribute("id", "hidden");
+userFeedback.appendChild(updateBtnElement);
+
+//This will make the update list button visible if it has completed task
+const updateBtnVisibilityChecker = () => {
+  const totalCompleted = todos.filter((todo) => todo.completed);
+  updateBtnElement.setAttribute("id", totalCompleted.length ? "" : "hidden");
+};
 
 const daysOfTheWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -113,15 +155,16 @@ const drawTable = () => {
     row.className = todo.completed ? "checked" : "";
 
     row.insertCell(0).innerHTML = todo.todo;
+
     const created = row.insertCell(1);
     created.innerHTML = todo.created;
-    created.width = "30%";
+    created.width = "25%";
 
     row.insertCell(2).appendChild(checkbox);
 
     const updated = row.insertCell(3);
     updated.innerHTML = todo.updated;
-    updated.width = "30%";
+    updated.width = "25%";
   }
 };
 
@@ -134,7 +177,7 @@ userInput.addEventListener("keypress", (e) => {
   }
 });
 
-//Event Delegation
+//Event Delegation -- Checkbox Event Listeners
 userFeedbackTable.addEventListener("click", (e) => {
   // This will check if the the checkbox has been clicked
   if (e.target.matches(".checkbox")) {
@@ -157,5 +200,19 @@ userFeedbackTable.addEventListener("click", (e) => {
 
     //Redraw the table
     drawTable();
+
+    updateBtnVisibilityChecker();
   }
+});
+
+//Bonus
+//Add Event Listener
+updateBtnElement.addEventListener("click", () => {
+  //Removing completed task
+  todos = todos.filter((todo) => !todo.completed);
+
+  //Redrawing the table data
+  drawTable();
+
+  updateBtnVisibilityChecker();
 });
