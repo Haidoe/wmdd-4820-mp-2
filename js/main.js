@@ -64,33 +64,7 @@ const updateBtnVisibilityChecker = () => {
   updateBtnElement.setAttribute("id", totalCompleted.length ? "" : "hidden");
 };
 
-const daysOfTheWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-const months = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "July",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-
 let todos = [];
-
-const formatDate = (d) => {
-  const year = d.getFullYear();
-  const dayOfWeek = daysOfTheWeek[d.getDay()];
-  const day = d.getDate();
-  const month = months[d.getMonth()];
-
-  return `${dayOfWeek} ${month} ${day} ${year}`;
-};
 
 //Bringing the Checked Checkbox down
 const updateTodosSequence = () => {
@@ -102,37 +76,6 @@ const updateTodosSequence = () => {
 
   //Update the Todos List
   todos = [...notCompleted, ...completed];
-};
-
-const addTodo = (e) => {
-  e.preventDefault();
-
-  const todo = userInput.value.trim();
-
-  if (!todo) {
-    return;
-  }
-
-  const now = new Date(Date.now());
-
-  const created = formatDate(now);
-
-  todos.push({
-    todo,
-    created,
-    completed: false,
-    updated: "",
-  });
-
-  userInput.value = "";
-  userInput.focus();
-
-  updateTodosSequence();
-
-  //Display To Table
-  drawTable();
-
-  //Add Reset
 };
 
 const drawTable = () => {
@@ -168,6 +111,34 @@ const drawTable = () => {
   }
 };
 
+const addTodo = (e) => {
+  e.preventDefault();
+
+  const todo = userInput.value.trim();
+
+  if (!todo) {
+    return;
+  }
+
+  const now = new Date();
+  const created = now.toDateString();
+
+  todos.push({
+    todo,
+    created,
+    completed: false,
+    updated: "",
+  });
+
+  userInput.value = "";
+  userInput.focus();
+
+  updateTodosSequence();
+
+  //Display To Table
+  drawTable();
+};
+
 addItem.addEventListener("click", addTodo);
 
 //For Better UX - Trigger AddTodo for Enter Key
@@ -188,7 +159,7 @@ userFeedbackTable.addEventListener("click", (e) => {
 
     if (todo.completed) {
       const now = new Date();
-      const date = formatDate(now);
+      const date = now.toDateString();
 
       todo.updated = date;
     } else {
